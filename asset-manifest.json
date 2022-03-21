@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/git-images-world/static/css/main.0bb566ec.css",
-    "main.js": "/git-images-world/static/js/main.f226b1c8.js",
+    "main.css": "/git-images-world/static/css/main.24b06aa5.css",
+    "main.js": "/git-images-world/static/js/main.6ad017e1.js",
     "index.html": "/git-images-world/index.html",
-    "main.0bb566ec.css.map": "/git-images-world/static/css/main.0bb566ec.css.map",
-    "main.f226b1c8.js.map": "/git-images-world/static/js/main.f226b1c8.js.map"
+    "main.24b06aa5.css.map": "/git-images-world/static/css/main.24b06aa5.css.map",
+    "main.6ad017e1.js.map": "/git-images-world/static/js/main.6ad017e1.js.map"
   },
   "entrypoints": [
-    "static/css/main.0bb566ec.css",
-    "static/js/main.f226b1c8.js"
+    "static/css/main.24b06aa5.css",
+    "static/js/main.6ad017e1.js"
   ]
 }
