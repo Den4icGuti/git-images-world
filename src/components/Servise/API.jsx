@@ -2,15 +2,15 @@ import axios from "axios";
 import PropTypes from 'prop-types'
 
 //===Записываем базовый API в axios===//
-  axios.defaults.baseURL = "https://pixabay.com/api/";
+axios.defaults.baseURL = "https://pixabay.com/api/";
 
 async function fetchApi(searchQuery,page) { 
 
   const paramUrl = new URLSearchParams({
-    key: "25225743-62355b18deaf2a31912b18441",
-    page: page,
-    per_page: 12,
-    q: searchQuery,
+     key: '25225743-62355b18deaf2a31912b18441',
+     page: page,
+     per_page: 12,
+     q: searchQuery,
     img_type: 'photo&orientation=horizontal'
   });
 

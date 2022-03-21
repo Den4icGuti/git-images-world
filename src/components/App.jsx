@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import Container from './Container';
 import Form from './SearchForm/SearchForm';
 import ImageGallery from './ImageGallery';
+import BtnLoad from './BtnLoad';
 import fetchApi from './Servise/API';
 
 
@@ -23,7 +24,15 @@ import fetchApi from './Servise/API';
      if (page !== this.state.page || searchQuery !== this.state.searchQuery) { 
       return this.fetchImg(searchQuery,page)
      }
+     this.handleScroll();
    }
+    //===Метод плавной прокрутки===//
+   handleScroll = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
    //===Метод обработки запроса===//
    fetchImg = async () => {
@@ -38,8 +47,14 @@ import fetchApi from './Servise/API';
      }
    };
 
+   onHandleLoadMore = () => { 
+     this.setState((prevState) => { 
+       return ({page: prevState.page + 1})
+     })
+   }
+
    render() { 
-     const {  gallery } = this.state;
+     const {  gallery,page } = this.state;
      const formSubmit = this.onFormSubmit;
      return (
        <Container>
@@ -49,7 +64,10 @@ import fetchApi from './Servise/API';
            theme={'dark'}
          />
          <Form onSubmit={formSubmit} />
-         {gallery.length > 0 && (<ImageGallery img={gallery}/>)}
+         {gallery.length > 0 && (<ImageGallery img={gallery} />)}
+         {gallery.length > 0 && gallery.length / page === 12 && (
+           <BtnLoad onLoadMore={this.onHandleLoadMore}/>
+         )}
        </Container>
      
      );
