@@ -2,7 +2,7 @@ import axios from "axios";
 import PropTypes from 'prop-types'
 
 //===Записываем базовый API в axios===//
-axios.defaults.baseURL = "https://pixabay.com/api/";
+  axios.defaults.baseURL = "https://pixabay.com/api/";
 
 async function fetchApi(searchQuery,page) { 
 

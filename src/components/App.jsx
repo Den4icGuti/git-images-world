@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
+import Load from './Loader';
 import Container from './Container';
 import Form from './SearchForm/SearchForm';
 import ImageGallery from './ImageGallery';
@@ -12,11 +13,17 @@ import fetchApi from './Servise/API';
    state = {
      searchQuery: '',
      gallery: [],
-     page:1
+     page: 1,
+     load:false
    };
    
-   onFormSubmit = searchQuery => {
-     this.setState({searchQuery})
+   //===Mетод отправки запроса поиска, с каждым новым запросом возвращается в исхдное положение===//
+   onFormSubmit = query => {
+     this.setState({
+       searchQuery: query,
+       page: 1,
+       gallery:[]
+     })
    };
 
    //===Обновляем состояние через метод зизненного цикла componentDidUpdate===//
@@ -34,9 +41,16 @@ import fetchApi from './Servise/API';
     });
   };
 
+   onLoading = () => {
+     this.setState(({ load }) => ({
+       load: !load
+     }))
+   };
+
    //===Метод обработки запроса===//
    fetchImg = async () => {
      const { searchQuery, page } = this.state;
+     this.onLoading()
      try {
        const imgGallery = await fetchApi(searchQuery, page);
        this.setState(({ gallery }) => {
@@ -44,6 +58,8 @@ import fetchApi from './Servise/API';
        });
      } catch (error) {
        console.log(error);
+     } finally { 
+       this.onLoading()
      }
    };
 
@@ -54,7 +70,7 @@ import fetchApi from './Servise/API';
    }
 
    render() { 
-     const {  gallery,page } = this.state;
+     const {  gallery,page,load } = this.state;
      const formSubmit = this.onFormSubmit;
      return (
        <Container>
@@ -64,10 +80,14 @@ import fetchApi from './Servise/API';
            theme={'dark'}
          />
          <Form onSubmit={formSubmit} />
+       
          {gallery.length > 0 && (<ImageGallery img={gallery} />)}
+             {load && <Load/>}
          {gallery.length > 0 && gallery.length / page === 12 && (
+           
            <BtnLoad onLoadMore={this.onHandleLoadMore}/>
          )}
+        
        </Container>
      
      );
