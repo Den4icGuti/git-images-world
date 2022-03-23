@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../SearchForm/Form.module.css';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 class Form extends Component { 
   state = {
-    searchQuery: '',
+    searchQuery: "",
   };
 
   
@@ -45,6 +46,10 @@ class Form extends Component {
       </header>
     );
   }
+}
+
+Form.propTypes = {
+  searchQuery:PropTypes.number.isRequired
 }
 
 export default Form;
