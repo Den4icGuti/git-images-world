@@ -28,6 +28,7 @@ const App = () => {
     if (!searchQuery) {
       return;
     };
+     //===Метод обработки запроса===//
     const fethImg = async () => {
       onLoading();
       try {
@@ -60,9 +61,7 @@ const App = () => {
     setLoad(load => !load);
   };
 
-   //===Метод обработки запроса===//
-  
-   //==Метода открытия модального окна==//
+  //==Метода открытия модального окна==//
   const onHandleModal = img => {
     setModalImg(img)
     onToggle()

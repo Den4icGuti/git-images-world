@@ -1,4 +1,5 @@
 import styles from '../GalleryItem/GallItem.module.css';
+
 const GalleryItem = ({ src, onImgClick, modalImg,comments,downloads,likes }) => { 
   return (
     <li className={styles.item} onClick={() => onImgClick(modalImg)}>
