@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import  { useState,useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import Load from './Loader';
 import Container from './Container';
@@ -9,114 +9,88 @@ import BtnLoad from './BtnLoad';
 import fetchApi from './Servise/API';
 
 
- export class App extends Component { 
-  
-   state = {
-     searchQuery: '',
-     gallery: [],
-     page: 1,
-     load:false
-   };
-   
-   //===Mетод отправки запроса поиска, с каждым новым запросом возвращается в исходное положение на страницу 1===//
-   onFormSubmit = query => {
-     this.setState({
-       searchQuery: query,
-       page: 1,
-       gallery:[],
-       shoWModal: false,
-       modalImg:''
-     })
+const App = () => { 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [gallery, setGallery] = useState([]);
+  const [page, setPage] = useState(1);
+  const [load, setLoad] = useState(false);
+  const [modalImg, setModalImg] = useState('');
+  const [showModal, setShoModal] = useState(false)
+
+  //===Mетод отправки запроса поиска, с каждым новым запросом возвращается в исходное положение на страницу 1===//
+  const onFormSubmit = (query) => {
+    setSearchQuery(query)
+    setGallery([])
+    setPage(1)
    };
 
-   //===Обновляем состояние через метод жизненного цикла componentDidUpdate===//
-   componentDidUpdate(prevProps, { searchQuery, page }) { 
-     if (page !== this.state.page || searchQuery !== this.state.searchQuery) { 
-      return this.fetchImg(searchQuery,page)
-     }
-     this.handleScroll();
-   }
-
-   //==Методо открытия,закрытия модалки==//
-   onToggle = ()=> { 
-     this.setState(({ shoWModal }) => ({
-       shoWModal:!shoWModal
-     }))
+  useEffect(() => {
+    if (!searchQuery) {
+      return;
+    };
+    const fethImg = async () => {
+      onLoading();
+      try {
+        const imgGallery = await fetchApi(searchQuery, page);
+        setGallery(gallery => [...gallery, ...imgGallery.hits])
+      } catch (error) {
+        return error.messge
+      } finally {
+        onLoading()
+      }
+      handleScroll();
+    }
+    fethImg()
+   },[searchQuery, page]);
     
-   }
-    //===Метод плавной прокрутки===//
-   handleScroll = () => {
+  //==Методо открытия,закрытия модалки==//
+  const onToggle = () => {
+    setShoModal(showModal => !showModal)
+  };
+  //===Метод плавной прокрутки===//
+  const handleScroll = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
     });
   };
 
-   //==Метод загрузчика, показать скрыть загрузсчик==//
-   onLoading = () => {
-     this.setState(({ load }) => ({
-       load: !load,
-     }));
-   };
+  //==Метод загрузчика, показать скрыть загрузсчик==//
+  const onLoading = () => {
+    setLoad(load => !load);
+  };
 
    //===Метод обработки запроса===//
-   fetchImg = async () => {
-     const { searchQuery, page } = this.state;
-     this.onLoading()
-     try {
-       const imgGallery = await fetchApi(searchQuery, page);
-       this.setState(({ gallery }) => {
-         return { gallery: [...gallery, ...imgGallery.hits] }
-       });
-     } catch (error) {
-       console.log(error);
-     } finally { 
-       this.onLoading()
-     }
-   };
-
+  
    //==Метода открытия модального окна==//
-   onHandleModal = img => { 
-     this.setState({ modalImg: img })
-     this.onToggle()
-   }
+  const onHandleModal = img => {
+    setModalImg(img)
+    onToggle()
+  };
   
    //==Метод добавления следуйщей страницы page + 1==//
-   onHandleLoadMore = () => { 
-     this.setState((prevState) => { 
-       return ({page: prevState.page + 1})
-     })
+  const onHandleLoadMore = () => {
+    setPage(page + 1)
+  };
+
+  return (
+    <Container>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        theme={'dark'}
+      />
+      <Form onSubmit={onFormSubmit} />
+      {showModal && (
+        <Modal large={modalImg} onClose={onToggle} />)}
+      {gallery.length > 0 && (<ImageGallery img={gallery} onImgClick={onHandleModal} />)}
+      {load && <Load />}
+      {gallery.length > 0 && gallery.length / page === 12 && (
+        <BtnLoad onLoadMore={onHandleLoadMore} />
+      )}
+    </Container>
+  );
+  
    }
-
-   render() { 
-     const {  gallery,page,load,shoWModal,modalImg } = this.state;
-     const formSubmit = this.onFormSubmit;
-     const toggle = this.onToggle;
-     const imgClick = this.onHandleModal;
-     
-     return (
-       <Container>
-         <ToastContainer
-           position="top-right"
-           autoClose={2000}
-           theme={'dark'}
-         />
-         <Form onSubmit={formSubmit } />
-         {shoWModal && (
-           <Modal large={modalImg} onClose={toggle} />)}
-         {gallery.length > 0 && (<ImageGallery img={gallery} onImgClick={imgClick}/>)}
-             {load && <Load/>}
-         {gallery.length > 0 && gallery.length / page === 12 && (
-           <BtnLoad onLoadMore={this.onHandleLoadMore}/>
-         )}
-       </Container>
-     );
-  }
-   }
-
-   
-
-
-
-
-
+  
+export default App;
